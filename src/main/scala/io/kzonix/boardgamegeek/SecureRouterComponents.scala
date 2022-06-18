@@ -11,6 +11,7 @@ import scala.concurrent.Future
 import javax.inject.Inject
 import io.kzonix.boardgamegeek.SecureRouterComponents.UserContext
 
+// TODO: add service based approach to deal with 'serverSecurityLogic'
 class SecureRouterComponents @Inject() (controllerComponents: RouterComponents) extends LazyLogging {
   val secureEndpoint
       : PartialServerEndpoint[String, UserContext, Unit, (StatusCode, ApiErrorResponse), Unit, Any, Future] =

@@ -16,9 +16,9 @@ class ServerApplicationModule(config: Config) extends AbstractModule with ScalaM
   import io.kzonix.boardgamegeek.ServerApplicationModule.createActorSystem
   import io.kzonix.boardgamegeek.ServerApplicationModule.decodeConfig
 
-  private val appConfig: RootConfig                      = decodeConfig(config)
+  private val rootConfig: RootConfig                     = decodeConfig(config)
   private val system: ActorSystem[SpawnProtocol.Command] = createActorSystem(
-    appConfig.appName,
+    rootConfig.appName,
     config,
   )
 
@@ -34,7 +34,7 @@ class ServerApplicationModule(config: Config) extends AbstractModule with ScalaM
     import scala.concurrent.ExecutionContext
     bind[Config].toInstance(config)
     // instantiate dependencies for all possible typed configurations
-    install(new ServerApplicationConfigModule(appConfig))
+    install(new ServerApplicationConfigModule(rootConfig))
     //
     bind[ServerApplication].to[AkkaHttpServerApplication].in[Singleton]()
     bind[RouterComponents].asEagerSingleton()

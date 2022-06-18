@@ -12,7 +12,7 @@ object GuardianAkkaHttpServerApplicationActor {
     Behaviors.setup { context =>
       // Start initial tasks
       // context.spawn(...)
-      context.log.info(s"Setup guardian actor $this")
+      context.log.info(s"Setup guardian actor '${ this.getClass.getSimpleName }''")
 
       SpawnProtocol()
     }
