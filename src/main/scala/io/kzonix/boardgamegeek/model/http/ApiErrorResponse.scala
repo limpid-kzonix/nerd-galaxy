@@ -1,19 +1,14 @@
 package io.kzonix.boardgamegeek.model.http
 
-import io.circe.Json
 import io.circe.generic.extras.ConfiguredJsonCodec
 import io.circe.generic.extras.Configuration
 import io.kzonix.boardgamegeek.util.CirceUtils.DefaultCirceConfig
 
 @ConfiguredJsonCodec
-case class ApiError(
-    module: String,
-    code: String,
-    msg: String,
-    details: Map[String, String] = Map.empty,
-    typedDetails: Json = Json.obj(),
+case class ApiErrorResponse(
+    errors: List[ApiError] = List.empty
   )
 
-object ApiError {
+object ApiErrorResponse {
   implicit val conf: Configuration = DefaultCirceConfig
 }

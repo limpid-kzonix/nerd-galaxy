@@ -2,16 +2,15 @@ package io.kzonix.boardgamegeek.model.http
 
 import io.circe.generic.extras.ConfiguredJsonCodec
 import io.circe.generic.extras.Configuration
-import io.kzonix.boardgamegeek.CirceUtils.DefaultConfig
+import io.kzonix.boardgamegeek.util.CirceUtils.DefaultCirceConfig
 
 @ConfiguredJsonCodec
 case class Warning(
     name: String,
     msg: String,
-    details: Map[String, String] = Map.empty
-)
+    details: Map[String, String] = Map.empty,
+  )
 
 object Warning {
-
-  implicit val conf: Configuration = DefaultConfig
+  implicit val conf: Configuration = DefaultCirceConfig
 }

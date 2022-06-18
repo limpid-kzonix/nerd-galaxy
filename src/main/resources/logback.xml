@@ -6,14 +6,14 @@
             <level>INFO</level>
         </filter>
         <encoder>
-            <pattern>[%date{ISO8601}] [%blue(%-35.35thread)] [%highlight(%-5.5level)] [%cyan(%-30.30logger{30})] - %msg %ex{full}%n
+            <pattern>[%date{ISO8601}] [%yellow(%-50.100thread{10})] [%highlight(%-5.5level)] [%magenta(%-50.100logger{10})] - %msg %ex{full}%n
             </pattern>
         </encoder>
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>app.log</file>
-        <immediateFlush>false</immediateFlush>
+        <immediateFlush>true</immediateFlush>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>board_game_geek_log_%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
