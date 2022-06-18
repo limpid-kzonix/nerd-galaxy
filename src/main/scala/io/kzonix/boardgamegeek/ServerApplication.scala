@@ -1,5 +1,9 @@
 package io.kzonix.boardgamegeek
 
-class ServerApplication {
+class ServerApplication(module: ServerApplicationModule) {
 
+  def start(
+
+           ): Unit = {}
+  def stop(): Unit  = {}
 }
