@@ -1,3 +1,5 @@
 package io.kzonix.boardgamegeek.config
 
-case class DatabaseConfig() {}
+case class DatabaseConfig(
+    mongo: MongoConfig
+  ) {}

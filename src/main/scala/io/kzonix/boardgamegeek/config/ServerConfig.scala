@@ -1,3 +1,5 @@
 package io.kzonix.boardgamegeek.config
 
-case class ServerConfig() {}
+case class ServerConfig(
+    http: HttpConfig
+  )

@@ -61,6 +61,7 @@ lazy val root = (project in file("."))
       "com.typesafe.akka"           %% "akka-http-testkit"        % AkkaHttpVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-core"               % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle"  % TapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-redoc-bundle"       % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-json-circe"         % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"   % TapirVersion,
       "net.codingwell"              %% "scala-guice"              % "5.1.0",

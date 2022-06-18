@@ -9,6 +9,7 @@ import io.kzonix.boardgamegeek.routes.ApplicationRouter
 
 import scala.concurrent.ExecutionContext
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class AkkaHttpServerApplication @Inject() (
     config: Config,
@@ -20,20 +21,56 @@ class AkkaHttpServerApplication @Inject() (
   implicit val executor: ExecutionContext             = system.executionContext
 
   def start(): Unit = {
+    import akka.actor.CoordinatedShutdown
+    import akka.actor.CoordinatedShutdown.{ PhaseActorSystemTerminate, PhaseBeforeServiceUnbind }
+
+    import scala.concurrent.Await
+    import scala.concurrent.duration.Duration
     logger.info("Starting Akka HTTP server instance...")
     logger.debug(config.root().render())
 
-    Http()
-      .newServerAt(
-        config.getString("http.interface"),
-        config.getInt("http.port"),
-      )
-      .bindFlow(router.routes)
+    val serverBinding: Future[Http.ServerBinding] = for {
+      serverBinding <- startHttpServer
+      _             <- Future(logger.info(s"The server has been successfully started: ${ serverBinding.toString }."))
+    } yield serverBinding
 
-    system.terminate()
+    Await.ready(
+      serverBinding,
+      Duration.Inf,
+    )
+
+    CoordinatedShutdown(as).addTask(
+      PhaseBeforeServiceUnbind,
+      "clean-up-server-resources",
+    ) { () =>
+      Future {
+        import akka.Done
+        logger.info("Before server termination")
+        Done.done()
+      }
+    }
+
+    CoordinatedShutdown(as).addTask(
+      PhaseActorSystemTerminate,
+      "clean-up-server-resources",
+    ) { () =>
+      Future {
+        import akka.Done
+        logger.info("Actor system termination")
+        Thread.sleep(35000)
+        Done.done()
+      }
+    }
+    ()
   }
 
-  def stop(): Unit = {}
+  private def startHttpServer: Future[Http.ServerBinding] =
+    Http()
+      .newServerAt(
+        config.getString("application.server.http.interface"),
+        config.getInt("application.server.http.port"),
+      )
+      .bindFlow(router.routes)
 }
 
 object AkkaHttpServerApplication {}
