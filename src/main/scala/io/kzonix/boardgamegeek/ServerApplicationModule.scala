@@ -9,13 +9,11 @@ import akka.actor.typed.SpawnProtocol
 import pureconfig.generic.auto._
 import io.kzonix.boardgamegeek.config.RootConfig
 import pureconfig.ConfigSource
+import io.kzonix.boardgamegeek.ServerApplicationModule.createActorSystem
+import io.kzonix.boardgamegeek.ServerApplicationModule.decodeConfig
 
 /** The main components of the server application */
 class ServerApplicationModule(config: Config) extends AbstractModule with ScalaModule {
-  import io.kzonix.boardgamegeek.config.RootConfig
-  import io.kzonix.boardgamegeek.ServerApplicationModule.createActorSystem
-  import io.kzonix.boardgamegeek.ServerApplicationModule.decodeConfig
-
   private val rootConfig: RootConfig                     = decodeConfig(config)
   private val system: ActorSystem[SpawnProtocol.Command] = createActorSystem(
     rootConfig.appName,
