@@ -14,9 +14,10 @@ import scala.concurrent.Future
 class AkkaHttpServerApplication @Inject() (
     config: Config,
     system: ActorSystem[SpawnProtocol.Command],
-    router: ApplicationRouter,
-  ) extends ServerApplication
+    router: ApplicationRouter)
+    extends ServerApplication
        with LazyLogging {
+
   implicit val as: ActorSystem[SpawnProtocol.Command] = system
   implicit val executor: ExecutionContext             = system.executionContext
 
@@ -71,6 +72,7 @@ class AkkaHttpServerApplication @Inject() (
         config.getInt("application.server.http.port"),
       )
       .bindFlow(router.routes)
+
 }
 
 object AkkaHttpServerApplication {}

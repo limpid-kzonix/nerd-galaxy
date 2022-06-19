@@ -11,8 +11,9 @@ import sttp.tapir.server.ServerEndpoint
 
 class DefaultApplicationRouter @Inject() (
     endpoints: Set[ServerEndpoints],
-    serverInterpreter: AkkaHttpServerInterpreter,
-  ) extends ApplicationRouter {
+    serverInterpreter: AkkaHttpServerInterpreter)
+    extends ApplicationRouter {
+
   private val allEndpoints: List[ServerEndpoint[AkkaStreams with capabilities.WebSockets, Future]] =
     endpoints.flatMap(_.endpoints).toList
 
@@ -24,4 +25,5 @@ class DefaultApplicationRouter @Inject() (
 
   def routes: Route =
     serverInterpreter.toRoute(allEndpoints ++ swaggerEndpoints)
+
 }

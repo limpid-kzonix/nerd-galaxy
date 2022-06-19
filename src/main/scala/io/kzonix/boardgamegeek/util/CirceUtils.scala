@@ -1,6 +1,7 @@
 package io.kzonix.boardgamegeek.util
 
 object CirceUtils {
+
   import io.circe.generic.extras.Configuration
   import io.circe.Encoder
 
@@ -12,4 +13,5 @@ object CirceUtils {
 
   def nonNullEncoder[T](encoder: Encoder[T]): Encoder[T] =
     encoder.mapJson(json => json.dropNullValues.dropEmptyValues)
+
 }

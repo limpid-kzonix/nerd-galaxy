@@ -6,8 +6,7 @@ import io.kzonix.boardgamegeek.util.CirceUtils.DefaultCirceConfig
 
 @ConfiguredJsonCodec
 case class ApiWarningMap(
-    data: List[Warning] = List.empty
-  )
+    data: List[Warning] = List.empty)
 
 object ApiWarningMap {
   implicit val conf: Configuration = DefaultCirceConfig

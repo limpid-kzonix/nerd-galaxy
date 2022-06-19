@@ -5,5 +5,4 @@ case class HttpConfig(
     port: Int,
     basePath: String = "/",
     apiVersion: Int = 1,
-    auth: AuthConfig,
-  ) {}
+    auth: AuthConfig) {}

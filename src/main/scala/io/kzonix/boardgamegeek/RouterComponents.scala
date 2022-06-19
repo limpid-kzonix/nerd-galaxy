@@ -15,6 +15,7 @@ import scala.concurrent.Future
 import javax.inject.Inject
 
 class RouterComponents @Inject() (appConfig: RootConfig) extends LazyLogging {
+
   val baseEndpoint: Endpoint[Unit, Unit, (StatusCode, ApiErrorResponse), Unit, Any] = endpoint
     .in("api" / "v1")
     .errorOut(statusCode.and(jsonBody[ApiErrorResponse]))
@@ -33,4 +34,5 @@ class RouterComponents @Inject() (appConfig: RootConfig) extends LazyLogging {
   val publicEndpoint: Endpoint[Unit, Unit, (StatusCode, ApiErrorResponse), Unit, Any] =
     baseEndpoint
       .in("public")
+
 }

@@ -6,6 +6,7 @@ import com.google.inject.Guice
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 
 object Main extends LazyLogging {
+
   def main(args: Array[String]): Unit = {
     logger.info("Loading configuration...")
     val config          = ConfigFactory.load()
@@ -16,4 +17,5 @@ object Main extends LazyLogging {
     val serverApp       = injector.instance[ServerApplication]
     serverApp.start()
   }
+
 }

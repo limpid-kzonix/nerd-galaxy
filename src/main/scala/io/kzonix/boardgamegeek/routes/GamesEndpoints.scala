@@ -22,9 +22,10 @@ import scala.concurrent.ExecutionContext
 class GamesEndpoints @Inject() (
     controllerComponents: RouterComponents
   )(implicit
-    ec: ExecutionContext
-  ) extends ServerEndpoints
+    ec: ExecutionContext)
+    extends ServerEndpoints
        with LazyLogging {
+
   /* The relative routePath of the current route */
   private val routePath: String = "games"
 
@@ -41,8 +42,7 @@ class GamesEndpoints @Inject() (
           Future {
             logger.info(user.toString)
             Right.apply[(StatusCode, ApiErrorResponse), ApiSuccessResponse[Game]](ApiSuccessResponse[Game](game))
-          }
-      )
+          })
 
   val updateGame
       : Full[String, SecureRouterComponents.UserContext, Game, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
@@ -57,8 +57,7 @@ class GamesEndpoints @Inject() (
           Future {
             logger.info(user.toString)
             Right.apply[(StatusCode, ApiErrorResponse), ApiSuccessResponse[Game]](ApiSuccessResponse[Game](game))
-          }
-      )
+          })
 
   val partialUpdateGame
       : Full[String, SecureRouterComponents.UserContext, Game, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
@@ -73,8 +72,7 @@ class GamesEndpoints @Inject() (
           Future {
             logger.info(user.toString)
             Right.apply[(StatusCode, ApiErrorResponse), ApiSuccessResponse[Game]](ApiSuccessResponse[Game](game))
-          }
-      )
+          })
 
   val deleteGame
       : Full[String, SecureRouterComponents.UserContext, String, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
@@ -96,8 +94,7 @@ class GamesEndpoints @Inject() (
                 )
               )
             )
-          }
-      )
+          })
 
   val getGame
       : Full[String, SecureRouterComponents.UserContext, String, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
@@ -119,8 +116,7 @@ class GamesEndpoints @Inject() (
                 )
               )
             )
-          }
-      )
+          })
 
   val listGames
       : Full[String, SecureRouterComponents.UserContext, Unit, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
@@ -141,8 +137,7 @@ class GamesEndpoints @Inject() (
                 )
               )
             )
-          }
-      )
+          })
 
   override def endpoints: List[ServerEndpoint[AkkaStreams with WebSockets, Future]] = List(
     createGame,
@@ -152,4 +147,5 @@ class GamesEndpoints @Inject() (
     partialUpdateGame,
     deleteGame,
   )
+
 }

@@ -3,6 +3,7 @@ package io.kzonix.boardgamegeek.config
 sealed trait AuthConfig
 
 object AuthConfig {
+
   sealed trait BearerAuth
   case class Jwt(privateKey: String) extends BearerAuth
 
@@ -15,4 +16,5 @@ object AuthConfig {
   case class Bearer(provider: BearerAuth) extends AuthConfig
   case class Basic(provider: BasicAuth)   extends AuthConfig
   case class ApiKey(provider: ApiKeyAuth) extends AuthConfig
+
 }

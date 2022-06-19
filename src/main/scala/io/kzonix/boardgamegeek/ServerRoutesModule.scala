@@ -8,9 +8,11 @@ import net.codingwell.scalaguice.ScalaMultibinder
 
 /** Register all available tAPIr endpoints. */
 class ServerRoutesModule extends AbstractModule with ScalaModule {
+
   override def configure(): Unit = {
     val mBinder = ScalaMultibinder.newSetBinder[ServerEndpoints](binder)
     mBinder.addBinding.to[GamesEndpoints]
     ()
   }
+
 }

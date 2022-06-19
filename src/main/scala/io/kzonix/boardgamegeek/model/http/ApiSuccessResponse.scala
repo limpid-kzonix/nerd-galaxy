@@ -9,10 +9,10 @@ import io.kzonix.boardgamegeek.util.CirceUtils.DefaultCirceConfig
 
 case class ApiSuccessResponse[T](
     data: T,
-    warns: Option[ApiWarningMap] = None,
-  )
+    warns: Option[ApiWarningMap] = None)
 
 object ApiSuccessResponse {
+
   import io.kzonix.boardgamegeek.util.CirceUtils.nonNullEncoder
 
   implicit val conf: Configuration = DefaultCirceConfig
@@ -24,4 +24,5 @@ object ApiSuccessResponse {
   @annotation.nowarn
   implicit def ApiResponseDecoder[T: Decoder]: Decoder[ApiSuccessResponse[T]] =
     deriveConfiguredDecoder
+
 }

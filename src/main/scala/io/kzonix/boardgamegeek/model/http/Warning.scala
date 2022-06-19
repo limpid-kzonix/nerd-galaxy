@@ -8,8 +8,7 @@ import io.kzonix.boardgamegeek.util.CirceUtils.DefaultCirceConfig
 case class Warning(
     name: String,
     msg: String,
-    details: Map[String, String] = Map.empty,
-  )
+    details: Map[String, String] = Map.empty)
 
 object Warning {
   implicit val conf: Configuration = DefaultCirceConfig

@@ -6,6 +6,7 @@ import net.codingwell.scalaguice.ScalaModule
 
 /** The static config instances */
 class ServerApplicationConfigModule(rootConfig: RootConfig) extends AbstractModule with ScalaModule {
+
   import io.kzonix.boardgamegeek.config.ApplicationConfig
 
   override def configure(): Unit = {
@@ -14,4 +15,5 @@ class ServerApplicationConfigModule(rootConfig: RootConfig) extends AbstractModu
     bind[ApplicationConfig].toInstance(rootConfig.application)
     bind[DatabaseConfig].toInstance(rootConfig.database)
   }
+
 }

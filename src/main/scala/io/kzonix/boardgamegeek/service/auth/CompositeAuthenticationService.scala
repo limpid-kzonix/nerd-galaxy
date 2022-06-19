@@ -14,6 +14,7 @@ import io.kzonix.boardgamegeek.service.auth.CompositeAuthenticationService.Execu
 class CompositeAuthenticationService(authenticationServices: Set[AuthenticationService])
     extends AuthenticationService
        with LazyLogging {
+
   override def authenticate(authToken: String): EitherT[IO, AppRuntimeError, UserContext] = {
 
     val execResult: IO[Execution] = Execution(
@@ -61,13 +62,15 @@ class CompositeAuthenticationService(authenticationServices: Set[AuthenticationS
     else
       IO.pure(exec)
   }
+
 }
 
 object CompositeAuthenticationService {
+
   case class Execution(
       token: String,
       services: Set[AuthenticationService],
       exceptionTrace: List[AppRuntimeError],
-      result: Option[UserContext],
-    )
+      result: Option[UserContext])
+
 }

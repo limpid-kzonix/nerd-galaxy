@@ -18,14 +18,15 @@ case class ApiError(
     code: String,
     msg: String,
     details: Map[String, String] = Map.empty,
-    typedDetails: Json = Json.obj(),
-  )
+    typedDetails: Json = Json.obj())
 
 object ApiError {
+
   implicit lazy val schemaConf: SchemaConfiguration = SchemaConfiguration.default.withSnakeCaseMemberNames
   implicit lazy val jsonSchema: Schema[Json]        = Schema(SchemaType.SProduct(List.empty))
   implicit lazy val gamesSchema: Schema[ApiError]   = implicitly[Derived[Schema[ApiError]]].value
   implicit val conf: Configuration                  = DefaultCirceConfig
   implicit val encoder: Encoder[ApiError]           = nonNullEncoder[ApiError](deriveConfiguredEncoder[ApiError])
   implicit val decoder: Decoder[ApiError]           = deriveConfiguredDecoder[ApiError]
+
 }

@@ -13,8 +13,9 @@ import io.kzonix.boardgamegeek.SecureRouterComponents.UserContext
 
 // TODO: add service based approach to deal with 'serverSecurityLogic'
 class SecureRouterComponents @Inject() (
-    controllerComponents: RouterComponents
-  ) extends LazyLogging {
+    controllerComponents: RouterComponents)
+    extends LazyLogging {
+
   val secureEndpoint
       : PartialServerEndpoint[String, UserContext, Unit, (StatusCode, ApiErrorResponse), Unit, Any, Future] =
     controllerComponents
@@ -25,9 +26,12 @@ class SecureRouterComponents @Inject() (
         logger.info(auth)
         Future.successful(Right.apply[(StatusCode, ApiErrorResponse), UserContext](EmptyUserContext))
       }
+
 }
 
 object SecureRouterComponents {
+
   trait UserContext
   case object EmptyUserContext extends UserContext
+
 }

@@ -1,4 +1,5 @@
 object ScalacOptions {
+
   val Common: Seq[String] =
     Seq(
       "-Ymacro-annotations",
@@ -58,4 +59,5 @@ object ScalacOptions {
       "-Ycache-plugin-class-loader:last-modified", // Enables caching of classloaders for compiler plugins
       "-Ycache-macro-class-loader:last-modified",  // and macro definitions. This can lead to performance improvements.
     )
+
 }

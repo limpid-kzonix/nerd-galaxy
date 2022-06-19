@@ -6,8 +6,7 @@ import io.kzonix.boardgamegeek.util.CirceUtils.DefaultCirceConfig
 
 @ConfiguredJsonCodec
 case class ApiErrorResponse(
-    errors: List[ApiError] = List.empty
-  )
+    errors: List[ApiError] = List.empty)
 
 object ApiErrorResponse {
   implicit val conf: Configuration = DefaultCirceConfig

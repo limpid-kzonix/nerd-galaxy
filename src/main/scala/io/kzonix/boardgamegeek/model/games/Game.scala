@@ -15,13 +15,14 @@ import sttp.tapir.generic.auto._
 case class Game(
     id: String,
     name: String,
-    createdAt: Option[Long] = None,
-  )
+    createdAt: Option[Long] = None)
 
 object Game {
+
   implicit lazy val schemaConf: SchemaConfiguration = SchemaConfiguration.default.withSnakeCaseMemberNames
   implicit lazy val gamesSchema: Schema[Game]       = implicitly[Derived[Schema[Game]]].value
   implicit val conf: Configuration                  = DefaultCirceConfig
   implicit val encoder: Encoder[Game]               = nonNullEncoder[Game](deriveConfiguredEncoder[Game])
   implicit val decoder: Decoder[Game]               = deriveConfiguredDecoder[Game]
+
 }

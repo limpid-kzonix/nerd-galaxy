@@ -14,7 +14,9 @@ import io.kzonix.boardgamegeek.ServerApplicationModule.decodeConfig
 
 /** The main components of the server application */
 class ServerApplicationModule(config: Config) extends AbstractModule with ScalaModule {
+
   private val rootConfig: RootConfig                     = decodeConfig(config)
+
   private val system: ActorSystem[SpawnProtocol.Command] = createActorSystem(
     rootConfig.appName,
     config,
@@ -44,9 +46,11 @@ class ServerApplicationModule(config: Config) extends AbstractModule with ScalaM
     //
     install(new ServerRoutesModule())
   }
+
 }
 
 object ServerApplicationModule {
+
   private def decodeConfig(config: Config) =
     ConfigSource
       .fromConfig(config)
@@ -59,4 +63,5 @@ object ServerApplicationModule {
       appName,
       config,
     )
+
 }
