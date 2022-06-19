@@ -32,8 +32,8 @@ lazy val root = (project in file("."))
   )
   .settings(commonSettings)
   .settings(
-    name                             := "board-game-geek",
-    Compile / mainClass              := Some("io.kzonix.boardgamegeek.Main"),
+    name                             := "nerd-galaxy",
+    Compile / mainClass              := Some("io.kzonix.nerdgalaxy.Main"),
     assembly / mainClass             := (Compile / mainClass).value,
     assembly / assemblyJarName       := s"${ name.value }-${ version.value }.jar",
     assembly / assemblyCacheOutput   := false,
