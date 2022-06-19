@@ -7,7 +7,6 @@ import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 
 object Main extends LazyLogging {
   def main(args: Array[String]): Unit = {
-
     logger.info("Loading configuration...")
     val config          = ConfigFactory.load()
     logger.info("The configuration has been successfully loaded.")

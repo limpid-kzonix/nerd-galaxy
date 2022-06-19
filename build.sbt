@@ -1,3 +1,5 @@
+import sbtassembly.AssemblyPlugin.defaultShellScript
+
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 val AkkaVersion     = "2.6.19"
@@ -6,7 +8,8 @@ val TapirVersion    = "1.0.0-RC1"
 val CirceVersion    = "0.14.2"
 val Http4sVersion   = "1.0.0-M32"
 
-ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / scalaVersion               := "2.13.8"
+ThisBuild / assemblyPrependShellScript := Some(defaultShellScript)
 ThisBuild / scalacOptions ++= ScalacOptions.Common
 
 lazy val commonSettings = commonScalacOptions ++ Seq(
@@ -23,9 +26,31 @@ lazy val commonScalacOptions = Seq(
 )
 
 lazy val root = (project in file("."))
+  .enablePlugins(
+    UniversalPlugin,
+    JavaAppPackaging,
+  )
   .settings(commonSettings)
   .settings(
-    name := "board-game-geek",
+    name                             := "board-game-geek",
+    Compile / mainClass              := Some("io.kzonix.boardgamegeek.Main"),
+    assembly / mainClass             := (Compile / mainClass).value,
+    assembly / assemblyJarName       := s"${ name.value }-${ version.value }.jar",
+    assembly / assemblyCacheOutput   := false,
+    assembly / aggregate             := false,
+    assembly / compile               := (Compile / compile).value,
+    assembly / test                  := Seq(),
+    assembly / assemblyMergeStrategy := {
+      case "logback.xml"                         => MergeStrategy.discard
+      case "logback-test.xml"                    => MergeStrategy.discard
+      case x if x.endsWith(".conf")              => MergeStrategy.concat
+      case x if x.endsWith(".example")           => MergeStrategy.concat
+      case PathList("META-INF", "services", _*)  => MergeStrategy.concat
+      case PathList("META-INF", "maven", _*)     => MergeStrategy.singleOrError
+      case PathList("META-INF", "resources", _*) => MergeStrategy.last
+      case PathList("META-INF", _*)              => MergeStrategy.discard
+      case _                                     => MergeStrategy.first
+    },
     libraryDependencies ++= Seq(
       "commons-io"                   % "commons-io"               % "2.11.0",
       "org.apache.commons"           % "commons-math"             % "2.2",
@@ -39,24 +64,22 @@ lazy val root = (project in file("."))
       "ch.qos.logback"               % "logback-classic"          % "1.2.11",
       "io.kamon"                    %% "kamon-core"               % "2.5.3",
       "io.kamon"                    %% "kamon-system-metrics"     % "2.5.3",
-      "io.kamon"                    %% "kamon-testkit"            % "2.5.3"     % Test,
+      "io.kamon"                    %% "kamon-testkit"            % "2.5.3"      % Test,
       "io.circe"                    %% "circe-core"               % CirceVersion,
       "io.circe"                    %% "circe-generic"            % CirceVersion,
       "io.circe"                    %% "circe-parser"             % CirceVersion,
-      "io.circe"                    %% "circe-testing"            % CirceVersion,
+      "io.circe"                    %% "circe-testing"            % CirceVersion % Test,
       "io.circe"                    %% "circe-generic-extras"     % CirceVersion,
       "io.circe"                    %% "circe-jawn"               % CirceVersion,
       "com.typesafe.akka"           %% "akka-slf4j"               % AkkaVersion,
-      "com.typesafe.akka"           %% "akka-protobuf-v3"         % AkkaVersion,
       "com.typesafe.akka"           %% "akka-actor-typed"         % AkkaVersion,
       "com.typesafe.akka"           %% "akka-actor"               % AkkaVersion,
       "com.typesafe.akka"           %% "akka-discovery"           % AkkaVersion,
       "com.typesafe.akka"           %% "akka-coordination"        % AkkaVersion,
       "com.typesafe.akka"           %% "akka-cluster-typed"       % AkkaVersion,
       "com.typesafe.akka"           %% "akka-stream"              % AkkaVersion,
-      "com.typesafe.akka"           %% "akka-cluster-typed"       % AkkaVersion,
-      "com.typesafe.akka"           %% "akka-actor-testkit-typed" % AkkaVersion % Test,
-      "com.typesafe.akka"           %% "akka-testkit"             % AkkaVersion % Test,
+      "com.typesafe.akka"           %% "akka-actor-testkit-typed" % AkkaVersion  % Test,
+      "com.typesafe.akka"           %% "akka-testkit"             % AkkaVersion  % Test,
       "com.typesafe.akka"           %% "akka-http"                % AkkaHttpVersion,
       "com.typesafe.akka"           %% "akka-http-testkit"        % AkkaHttpVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-core"               % TapirVersion,
