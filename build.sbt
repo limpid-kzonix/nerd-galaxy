@@ -7,6 +7,7 @@ val AkkaHttpVersion = "10.2.9"
 val TapirVersion    = "1.0.0-RC1"
 val CirceVersion    = "0.14.2"
 val Http4sVersion   = "1.0.0-M32"
+val MacwireVersion  = "2.5.7"
 
 ThisBuild / scalaVersion               := "2.13.8"
 ThisBuild / assemblyPrependShellScript := Some(defaultShellScript)
@@ -92,6 +93,8 @@ lazy val root = (project in file("."))
       "com.softwaremill.sttp.tapir" %% "tapir-redoc-bundle"       % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-json-circe"         % TapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"   % TapirVersion,
-      "net.codingwell"              %% "scala-guice"              % "5.1.0",
+      "com.softwaremill.macwire"    %% "macros"                   % MacwireVersion,
+      "com.softwaremill.macwire"    %% "util"                     % MacwireVersion,
+      "com.softwaremill.macwire"    %% "proxy"                    % MacwireVersion,
     ),
   )

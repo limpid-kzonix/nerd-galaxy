@@ -1,20 +1,17 @@
 package io.kzonix.nerdgalaxy.config
 
-sealed trait AuthConfig
+import io.kzonix.nerdgalaxy.config.AuthConfig.AuthProvider
+
+case class AuthConfig(
+    pathPrefix: String,
+    providers: Set[AuthProvider])
 
 object AuthConfig {
 
-  sealed trait BearerAuth
-  case class Jwt(privateKey: String) extends BearerAuth
+  sealed trait AuthProvider
 
-  sealed trait BasicAuth
-  case class Predefined(creds: List[String]) extends BasicAuth
-
-  sealed trait ApiKeyAuth
-  case class PredefKeys(keys: List[String]) extends ApiKeyAuth
-
-  case class Bearer(provider: BearerAuth) extends AuthConfig
-  case class Basic(provider: BasicAuth)   extends AuthConfig
-  case class ApiKey(provider: ApiKeyAuth) extends AuthConfig
+  case class Jwt(privateKey: String)    extends AuthProvider
+  case class Basic(creds: List[String]) extends AuthProvider
+  case class ApiKey(keys: List[String]) extends AuthProvider
 
 }

@@ -1,62 +1,56 @@
 package io.kzonix.nerdgalaxy
 
-import com.google.inject.AbstractModule
 import com.typesafe.config.Config
-import net.codingwell.scalaguice.ScalaModule
-import com.google.inject.Singleton
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.SpawnProtocol
-import pureconfig.generic.auto._
-import io.kzonix.nerdgalaxy.config.RootConfig
-import pureconfig.ConfigSource
+import cats.effect.unsafe.IORuntime
+import com.softwaremill.macwire.Module
+import io.kzonix.nerdgalaxy.routes.ApplicationRouter
+import io.kzonix.nerdgalaxy.routes.DefaultApplicationRouter
+import io.kzonix.nerdgalaxy.routes.ServerEndpoints
+import io.kzonix.nerdgalaxy.routes.GamesEndpoints
+import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+
+import scala.concurrent.ExecutionContext
+import com.softwaremill.macwire.wire
+import com.softwaremill.macwire.wireSet
 import io.kzonix.nerdgalaxy.ServerApplicationModule.createActorSystem
-import io.kzonix.nerdgalaxy.ServerApplicationModule.decodeConfig
-
+import io.kzonix.nerdgalaxy.service.security.AuthenticationService
+import io.kzonix.nerdgalaxy.service.security.JwtAuthenticationService
 /** The main components of the server application */
-class ServerApplicationModule(config: Config) extends AbstractModule with ScalaModule {
+@Module
+class ServerApplicationModule(runtime: IORuntime, configModule: ServerApplicationConfigModule) {
 
-  private val rootConfig: RootConfig = decodeConfig(config)
+  import configModule._
 
-  private val system: ActorSystem[SpawnProtocol.Command] = createActorSystem(
+  implicit lazy val system: ActorSystem[SpawnProtocol.Command] = createActorSystem(
     rootConfig.appName,
-    config,
+    rawConfig,
   )
+  implicit lazy val ec: ExecutionContext                       = system.executionContext
+  implicit lazy val appRuntime: IORuntime                      = runtime
 
-  override def configure(): Unit = {
-    import io.kzonix.nerdgalaxy.routes.{ ApplicationRouter, DefaultApplicationRouter, ServerEndpoints, GamesEndpoints }
-    import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-
-    import scala.concurrent.ExecutionContext
-    bind[Config].toInstance(config)
-    // instantiate dependencies for all possible typed configurations
-    install(new ServerApplicationConfigModule(rootConfig))
-    //
-    bind[ServerApplication].to[AkkaHttpServerApplication].in[Singleton]()
-    bind[RouterComponents].asEagerSingleton()
-    bind[ActorSystem[SpawnProtocol.Command]].toInstance(system)
-    bind[ExecutionContext].toInstance(system.executionContext)
-    bind[AkkaHttpServerInterpreter].toInstance(AkkaHttpServerInterpreter()(system.executionContext))
-    bind[ServerEndpoints].to[GamesEndpoints].in[Singleton]()
-    bind[ApplicationRouter].to[DefaultApplicationRouter].in[Singleton]()
-    //
-    install(new ServerRoutesModule())
-  }
+  lazy val akkaHttpServerInterpreter: AkkaHttpServerInterpreter = AkkaHttpServerInterpreter()(system.executionContext)
+  // authentication providers
+  lazy val jwtAuthenticationService: AuthenticationService      = wire[JwtAuthenticationService]
+  lazy val authenticationServices: Set[AuthenticationService]   = wireSet[AuthenticationService]
+  // router components
+  lazy val routerComponents: RouterComponents                   = wire[RouterComponents]
+  lazy val secureRouterComponents: SecureRouterComponents       = wire[SecureRouterComponents]
+  // routes wiring
+  lazy val gamesServerEndpoints: GamesEndpoints                 = wire[GamesEndpoints]
+  // preparing a set of routes
+  lazy val routes: Set[ServerEndpoints]                         = wireSet[ServerEndpoints]
+  lazy val applicationRouter: ApplicationRouter                 = wire[DefaultApplicationRouter]
+  lazy val serverApplication: ServerApplication                 = wire[AkkaHttpServerApplication]
 
 }
 
 object ServerApplicationModule {
-
-  private def decodeConfig(config: Config) =
-    ConfigSource
-      .fromConfig(config)
-      .withFallback(ConfigSource.default)
-      .loadOrThrow[RootConfig]
-
   private def createActorSystem(appName: String, config: Config) =
     ActorSystem.create(
       GuardianAkkaHttpServerApplicationActor(),
       appName,
       config,
     )
-
 }

@@ -1,6 +1,5 @@
 package io.kzonix.nerdgalaxy.routes
 
-import io.kzonix.nerdgalaxy.RouterComponents
 import com.typesafe.scalalogging.LazyLogging
 import io.kzonix.nerdgalaxy.model.http.ApiSuccessResponse
 import sttp.capabilities.WebSockets
@@ -16,11 +15,10 @@ import io.kzonix.nerdgalaxy.model.games.Game
 import sttp.tapir.server.ServerEndpoint.Full
 import scala.concurrent.Future
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class GamesEndpoints @Inject() (
-    controllerComponents: RouterComponents
+class GamesEndpoints(
+    secureRouterComponents: SecureRouterComponents
   )(implicit
     ec: ExecutionContext)
     extends ServerEndpoints
@@ -31,8 +29,8 @@ class GamesEndpoints @Inject() (
 
   val createGame
       : Full[String, SecureRouterComponents.UserContext, Game, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
-    controllerComponents
-      .secureEndpoint
+    secureRouterComponents
+      .jwtAuthSecureEndpoint
       .in(routePath)
       .post
       .in(jsonBody[Game])
@@ -46,8 +44,8 @@ class GamesEndpoints @Inject() (
 
   val updateGame
       : Full[String, SecureRouterComponents.UserContext, Game, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
-    controllerComponents
-      .secureEndpoint
+    secureRouterComponents
+      .jwtAuthSecureEndpoint
       .in(routePath)
       .put
       .in(jsonBody[Game])
@@ -61,8 +59,8 @@ class GamesEndpoints @Inject() (
 
   val partialUpdateGame
       : Full[String, SecureRouterComponents.UserContext, Game, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
-    controllerComponents
-      .secureEndpoint
+    secureRouterComponents
+      .jwtAuthSecureEndpoint
       .in(routePath)
       .patch
       .in(jsonBody[Game])
@@ -76,8 +74,8 @@ class GamesEndpoints @Inject() (
 
   val deleteGame
       : Full[String, SecureRouterComponents.UserContext, String, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
-    controllerComponents
-      .secureEndpoint
+    secureRouterComponents
+      .jwtAuthSecureEndpoint
       .in(routePath)
       .delete
       .in(path[String])
@@ -98,8 +96,8 @@ class GamesEndpoints @Inject() (
 
   val getGame
       : Full[String, SecureRouterComponents.UserContext, String, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
-    controllerComponents
-      .secureEndpoint
+    secureRouterComponents
+      .jwtAuthSecureEndpoint
       .in(routePath)
       .get
       .in(path[String])
@@ -120,8 +118,8 @@ class GamesEndpoints @Inject() (
 
   val listGames
       : Full[String, SecureRouterComponents.UserContext, Unit, (StatusCode, ApiErrorResponse), ApiSuccessResponse[Game], Any, Future] =
-    controllerComponents
-      .secureEndpoint
+    secureRouterComponents
+      .apiKeyAuthSecureEndpoint
       .in(routePath)
       .get
       .out(jsonBody[ApiSuccessResponse[Game]])
@@ -139,13 +137,14 @@ class GamesEndpoints @Inject() (
             )
           })
 
-  override def endpoints: List[ServerEndpoint[AkkaStreams with WebSockets, Future]] = List(
-    createGame,
-    getGame,
-    listGames,
-    updateGame,
-    partialUpdateGame,
-    deleteGame,
-  )
+  override def endpoints: List[ServerEndpoint[AkkaStreams with WebSockets, Future]] =
+    List(
+      createGame,
+      getGame,
+      listGames,
+      updateGame,
+      partialUpdateGame,
+      deleteGame,
+    )
 
 }

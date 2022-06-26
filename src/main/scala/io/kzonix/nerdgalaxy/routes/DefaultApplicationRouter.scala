@@ -4,12 +4,11 @@ import akka.http.scaladsl.server.Route
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import scala.concurrent.Future
-import javax.inject.Inject
 import sttp.capabilities
 import sttp.capabilities.akka.AkkaStreams
 import sttp.tapir.server.ServerEndpoint
 
-class DefaultApplicationRouter @Inject() (
+class DefaultApplicationRouter(
     endpoints: Set[ServerEndpoints],
     serverInterpreter: AkkaHttpServerInterpreter)
     extends ApplicationRouter {
@@ -23,7 +22,6 @@ class DefaultApplicationRouter @Inject() (
     "1.0",
   )
 
-  def routes: Route =
-    serverInterpreter.toRoute(allEndpoints ++ swaggerEndpoints)
+  def routes: Route = serverInterpreter.toRoute(allEndpoints ++ swaggerEndpoints)
 
 }

@@ -1,38 +1,20 @@
 package io.kzonix.nerdgalaxy
 
 import com.typesafe.scalalogging.LazyLogging
-import io.kzonix.nerdgalaxy.config.RootConfig
+import io.kzonix.nerdgalaxy.config.HttpConfig
 import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 import io.kzonix.nerdgalaxy.model.http.ApiErrorResponse
-import io.kzonix.nerdgalaxy.SecureRouterComponents.EmptyUserContext
-import io.kzonix.nerdgalaxy.SecureRouterComponents.UserContext
-import sttp.tapir.server.PartialServerEndpoint
 
-import scala.concurrent.Future
-import javax.inject.Inject
-
-class RouterComponents @Inject() (appConfig: RootConfig) extends LazyLogging {
+class RouterComponents(httpConfig: HttpConfig) extends LazyLogging {
 
   val baseEndpoint: Endpoint[Unit, Unit, (StatusCode, ApiErrorResponse), Unit, Any] = endpoint
-    .in("api" / "v1")
+    .in("api" / s"v${ httpConfig.apiVersion }")
     .errorOut(statusCode.and(jsonBody[ApiErrorResponse]))
 
-  val secureEndpoint
-      : PartialServerEndpoint[String, UserContext, Unit, (StatusCode, ApiErrorResponse), Unit, Any, Future] =
-    baseEndpoint
-      .securityIn(auth.bearer[String]())
-      .in("secure")
-      .serverSecurityLogic[UserContext, Future] { auth =>
-        logger.info(auth)
-        logger.info(appConfig.toString)
-        Future.successful(Right.apply[(StatusCode, ApiErrorResponse), UserContext](EmptyUserContext))
-      }
-
-  val publicEndpoint: Endpoint[Unit, Unit, (StatusCode, ApiErrorResponse), Unit, Any] =
-    baseEndpoint
-      .in("public")
+  val publicEndpoint: Endpoint[Unit, Unit, (StatusCode, ApiErrorResponse), Unit, Any] = baseEndpoint
+    .in("public")
 
 }

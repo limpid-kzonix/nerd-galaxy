@@ -7,6 +7,12 @@ object errors {
 
   object auth {
 
+    val NotImplementedYet: BaseErrorDef = BaseErrorDef(
+      code = "0",
+      module = "auth",
+      message = "The authentication type is not yet supported.",
+    )
+
     val NoSupportedAuth: BaseErrorDef = BaseErrorDef(
       code = "1",
       module = "auth",
