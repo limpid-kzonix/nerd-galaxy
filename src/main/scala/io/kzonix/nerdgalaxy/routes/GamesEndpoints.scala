@@ -11,10 +11,11 @@ import sttp.tapir.json.circe._
 import io.kzonix.nerdgalaxy.model.http.ApiErrorResponse
 import sttp.model.StatusCode
 import io.kzonix.nerdgalaxy.SecureRouterComponents
+import io.kzonix.nerdgalaxy.ServerEndpoints
 import io.kzonix.nerdgalaxy.model.games.Game
 import sttp.tapir.server.ServerEndpoint.Full
-import scala.concurrent.Future
 
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
 class GamesEndpoints(

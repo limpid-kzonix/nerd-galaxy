@@ -2,12 +2,8 @@ package io.kzonix.nerdgalaxy
 
 import com.typesafe.config.Config
 import akka.actor.typed.ActorSystem
-import akka.actor.typed.SpawnProtocol
 import cats.effect.unsafe.IORuntime
 import com.softwaremill.macwire.Module
-import io.kzonix.nerdgalaxy.routes.ApplicationRouter
-import io.kzonix.nerdgalaxy.routes.DefaultApplicationRouter
-import io.kzonix.nerdgalaxy.routes.ServerEndpoints
 import io.kzonix.nerdgalaxy.routes.GamesEndpoints
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
@@ -21,6 +17,7 @@ import io.kzonix.nerdgalaxy.service.security.JwtAuthenticationService
 @Module
 class ServerApplicationModule(runtime: IORuntime, configModule: ServerApplicationConfigModule) {
 
+  import akka.actor.typed.SpawnProtocol
   import configModule._
 
   implicit lazy val system: ActorSystem[SpawnProtocol.Command] = createActorSystem(
@@ -41,16 +38,23 @@ class ServerApplicationModule(runtime: IORuntime, configModule: ServerApplicatio
   lazy val gamesServerEndpoints: GamesEndpoints                 = wire[GamesEndpoints]
   // preparing a set of routes
   lazy val routes: Set[ServerEndpoints]                         = wireSet[ServerEndpoints]
-  lazy val applicationRouter: ApplicationRouter                 = wire[DefaultApplicationRouter]
+  lazy val applicationRouter: ApplicationRouter                 = wire[AkkaHttpApplicationRouter]
   lazy val serverApplication: ServerApplication                 = wire[AkkaHttpServerApplication]
 
 }
 
 object ServerApplicationModule {
-  private def createActorSystem(appName: String, config: Config) =
+
+  import akka.actor.typed.SpawnProtocol
+
+  private def createActorSystem(
+      appName: String,
+      config: Config,
+    ): ActorSystem[SpawnProtocol.Command] =
     ActorSystem.create(
-      GuardianAkkaHttpServerApplicationActor(),
+      GuardianActor(),
       appName,
       config,
     )
+
 }

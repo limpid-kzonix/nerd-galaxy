@@ -1,14 +1,15 @@
-package io.kzonix.nerdgalaxy.routes
+package io.kzonix.nerdgalaxy
 
 import akka.http.scaladsl.server.Route
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-import sttp.tapir.swagger.bundle.SwaggerInterpreter
-import scala.concurrent.Future
 import sttp.capabilities
 import sttp.capabilities.akka.AkkaStreams
+import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
-class DefaultApplicationRouter(
+import scala.concurrent.Future
+
+class AkkaHttpApplicationRouter(
     endpoints: Set[ServerEndpoints],
     serverInterpreter: AkkaHttpServerInterpreter)
     extends ApplicationRouter {

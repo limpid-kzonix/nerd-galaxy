@@ -5,10 +5,10 @@ import akka.actor.typed.SpawnProtocol
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import akka.http.scaladsl.Http
-import io.kzonix.nerdgalaxy.routes.ApplicationRouter
 import akka.actor.CoordinatedShutdown
 import akka.actor.CoordinatedShutdown.PhaseActorSystemTerminate
 import akka.actor.CoordinatedShutdown.PhaseBeforeServiceUnbind
+
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
